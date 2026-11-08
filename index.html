@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full bg-slate-900 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C&T Consultants - Assistant Recrutement LinkedIn</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0284c7',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            },
+            medical: {
+              teal: '#0d9488',
+              emerald: '#059669',
+              navy: '#0f172a',
+              card: '#1e293b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+  </style>
+</head>
+<body class="h-full flex flex-col bg-slate-950 text-slate-100 overflow-hidden">
+
+  <!-- En-tête principal -->
+  <header class="h-16 border-b border-slate-800 bg-slate-900/80 backdrop-blur px-6 flex items-center justify-between shrink-0">
+    <div class="flex items-center space-x-3">
+      <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-teal-500 to-sky-600 flex items-center justify-center text-white shadow-lg shadow-teal-500/20 font-bold">
+        C&T
+      </div>
+      <div>
+        <h1 class="font-bold text-lg leading-tight tracking-wide bg-gradient-to-r from-sky-400 to-teal-300 bg-clip-text text-transparent">C&T Consultants</h1>
+        <p class="text-xs text-slate-400">Assistant de Recrutement LinkedIn Santé & Médical</p>
+      </div>
+    </div>
+
+    <!-- Onglets de Navigation -->
+    <nav class="flex items-center space-x-1 bg-slate-950/60 p-1.5 rounded-xl border border-slate-800/80">
+      <button onclick="switchTab('parser')" id="tab-parser" class="nav-tab px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 bg-sky-600 text-white shadow-md">
+        <i class="fa-solid fa-file-invoice"></i>
+        <span>Analyseur LinkedIn</span>
+      </button>
+      <button onclick="switchTab('generator')" id="tab-generator" class="nav-tab px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+        <i class="fa-solid fa-paper-plane"></i>
+        <span>Générateur InMail IA</span>
+      </button>
+      <button onclick="switchTab('pipeline')" id="tab-pipeline" class="nav-tab px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+        <i class="fa-solid fa-users-viewfinder"></i>
+        <span>Pipeline Soignants</span>
+      </button>
+      <button onclick="switchTab('analytics')" id="tab-analytics" class="nav-tab px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Performance & KPIs</span>
+      </button>
+    </nav>
+
+    <!-- Profil Utilisateur & Statut -->
+    <div class="flex items-center space-x-4">
+      <div class="hidden md:flex items-center space-x-2 bg-slate-800/60 px-3 py-1.5 rounded-full border border-slate-700/50 text-xs text-teal-400">
+        <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+        <span>Conforme RGPD & HDS</span>
+      </div>
+      <div class="flex items-center space-x-3 pl-3 border-l border-slate-800">
+        <div class="w-9 h-9 rounded-full bg-sky-900 border border-sky-500/50 flex items-center justify-center font-bold text-xs text-sky-200">
+          CT
+        </div>
+        <div class="hidden lg:block text-xs">
+          <p class="font-semibold text-slate-200">Équipe Recrutement</p>
+          <p class="text-slate-400">C&T Consultants</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed top-20 right-6 z-50 transform translate-x-full opacity-0 transition-all duration-300 bg-teal-600 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3">
+    <i id="toast-icon" class="fa-solid fa-circle-check text-xl"></i>
+    <span id="toast-message" class="text-sm font-medium">Opération effectuée avec succès.</span>
+  </div>
+
+  <!-- Contenu Principal -->
+  <main class="flex-1 overflow-hidden relative">
+
+    <!-- ==================== ONGLET 1: PARSING LINKEDIN ==================== -->
+    <section id="view-parser" class="tab-content h-full p-6 overflow-y-auto">
+      <div class="max-w-7xl mx-auto space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <i class="fa-brands fa-linkedin text-sky-400"></i> Extraction et Qualification de Profil LinkedIn
+            </h2>
+            <p class="text-sm text-slate-400">Collez le texte brut d'un profil LinkedIn pour extraire les diplômes d'État, spécialités hospitalières et qualifications réglementaires.</p>
+          </div>
+          <button onclick="loadSampleProfile()" class="text-xs bg-slate-800 hover:bg-slate-700 text-sky-300 border border-sky-500/30 px-3 py-2 rounded-lg flex items-center gap-2 transition">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Charger un profil d'exemple (IADE / Anesthésie)
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Col Gauche : Entrée Texte Brut -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col space-y-4 shadow-xl">
+            <div class="flex justify-between items-center">
+              <label class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                <i class="fa-solid fa-paste text-teal-400"></i> Copier / Coller le profil LinkedIn
+              </label>
+              <span class="text-xs text-slate-400">Reconnaissance du vocabulaire médical</span>
+            </div>
+            
+            <textarea id="raw-linkedin-input" class="w-full h-80 bg-slate-950 border border-slate-800 rounded-xl p-4 text-sm font-mono text-slate-300 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 resize-none transition" placeholder="Collez ici les sections 'Infos', 'Expérience' et 'Diplômes' copiées depuis LinkedIn..."></textarea>
+            
+            <div class="flex items-center justify-between pt-2">
+              <button onclick="clearParserInput()" class="text-xs text-slate-400 hover:text-slate-200 transition">Effacer</button>
+              <button onclick="parseLinkedInProfile()" class="bg-gradient-to-r from-sky-500 to-teal-500 hover:from-sky-600 hover:to-teal-600 text-white px-6 py-2.5 rounded-xl font-medium text-sm shadow-lg shadow-sky-500/20 flex items-center space-x-2 transition">
+                <i class="fa-solid fa-microchip"></i>
+                <span>Analyser & Structurer le profil</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Col Droite : Carte Résultat Structurée -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-xl relative overflow-hidden">
+            <div id="parse-placeholder" class="h-full flex flex-col items-center justify-center text-center p-8 text-slate-500 space-y-3">
+              <i class="fa-solid fa-brain text-5xl text-slate-800"></i>
+              <p class="text-sm">Cliquez sur "Analyser & Structurer" pour afficher les compétences médicales et l'historique hospitalier.</p>
+            </div>
+
+            <div id="parse-results" class="hidden space-y-5 h-full flex flex-col justify-between">
+              <div>
+                <div class="flex justify-between items-start border-b border-slate-800 pb-4">
+                  <div class="flex items-center space-x-3">
+                    <div id="parsed-avatar" class="w-12 h-12 rounded-full bg-slate-800 border border-teal-500/40 flex items-center justify-center text-teal-400 font-bold text-lg">
+                      DR
+                    </div>
+                    <div>
+                      <h3 id="parsed-name" class="font-bold text-lg text-white">Dr. Julien Mercier</h3>
+                      <p id="parsed-headline" class="text-xs text-sky-400">Infirmier Anesthésiste Diplômé d'État (IADE)</p>
+                    </div>
+                  </div>
+                  <span id="parsed-score" class="px-3 py-1 bg-teal-500/10 border border-teal-500/30 text-teal-400 rounded-full text-xs font-semibold">
+                    Adéquation : 94%
+                  </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 my-4">
+                  <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                    <span class="text-[10px] uppercase tracking-wider text-slate-400 block mb-1">Spécialité Principale</span>
+                    <span id="parsed-specialty" class="text-sm font-semibold text-slate-200">Anesthésie & Réanimation</span>
+                  </div>
+                  <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                    <span class="text-[10px] uppercase tracking-wider text-slate-400 block mb-1">Expérience</span>
+                    <span id="parsed-seniority" class="text-sm font-semibold text-teal-400">Senior (+8 ans d'expérience)</span>
+                  </div>
+                </div>
+
+                <div class="space-y-3">
+                  <div>
+                    <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Diplômes & Habilitations Détectés</h4>
+                    <div id="parsed-certs" class="flex flex-wrap gap-2"></div>
+                  </div>
+
+                  <div>
+                    <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Compétences Techniques & Plateau</h4>
+                    <div id="parsed-skills" class="flex flex-wrap gap-1.5"></div>
+                  </div>
+
+                  <div>
+                    <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Historique Établissements</h4>
+                    <ul id="parsed-history" class="space-y-2 text-xs text-slate-300"></ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+                <span class="text-xs text-slate-400">Données validées pour C&T Consultants</span>
+                <div class="flex space-x-2">
+                  <button onclick="sendToInmailGen()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-paper-plane"></i> Créer Message
+                  </button>
+                  <button onclick="saveCandidateToPipeline()" class="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-medium transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-plus"></i> Ajouter au Pipeline
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ONGLET 2: GENERATEUR INMAIL IA ==================== -->
+    <section id="view-generator" class="tab-content h-full p-6 overflow-y-auto hidden">
+      <div class="max-w-7xl mx-auto space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-wand-magic-sparkles text-teal-400"></i> Générateur de Messages InMail Hyper-Personnalisés
+          </h2>
+          <p class="text-sm text-slate-400">Rédigez des messages d'approche ciblés pour maximiser le taux de réponse des soignants sur LinkedIn.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Paramètres (5 cols) -->
+          <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+            <h3 class="font-semibold text-sm text-slate-200 border-b border-slate-800 pb-3">Paramètres de l'approche</h3>
+            
+            <div class="space-y-3">
+              <div>
+                <label class="text-xs text-slate-300 font-medium block mb-1">Nom du candidat</label>
+                <input id="gen-candidate-name" type="text" value="Dr. Julien Mercier" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:border-sky-500 focus:outline-none">
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs text-slate-300 font-medium block mb-1">Poste Cible</label>
+                  <select id="gen-role" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:border-sky-500 focus:outline-none">
+                    <option value="Infirmier Anesthésiste (IADE)">Infirmier Anesthésiste (IADE)</option>
+                    <option value="Infirmier de Bloc Opératoire (IBODE)">Infirmier de Bloc (IBODE)</option>
+                    <option value="Médecin Urgentiste">Médecin Urgentiste</option>
+                    <option value="Cadre de Santé">Cadre de Santé</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-xs text-slate-300 font-medium block mb-1">Type d'Établissement</label>
+                  <select id="gen-facility" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:border-sky-500 focus:outline-none">
+                    <option value="Clinique Privée Chirurgicale">Clinique Privée</option>
+                    <option value="Centre Hospitalier Universitaire (CHU)">CHU / Public</option>
+                    <option value="Établissement ESPIC / EHPAD">ESPIC / EHPAD</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="text-xs text-slate-300 font-medium block mb-1">Arguments de valorisation (Hooks)</label>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                  <label class="flex items-center space-x-2 bg-slate-950 p-2 rounded border border-slate-800 cursor-pointer">
+                    <input type="checkbox" id="hook-salary" checked class="rounded accent-teal-500">
+                    <span class="text-slate-300">+20% à +25% Rémunération</span>
+                  </label>
+                  <label class="flex items-center space-x-2 bg-slate-950 p-2 rounded border border-slate-800 cursor-pointer">
+                    <input type="checkbox" id="hook-schedule" checked class="rounded accent-teal-500">
+                    <span class="text-slate-300">Planning Modulable 12h</span>
+                  </label>
+                  <label class="flex items-center space-x-2 bg-slate-950 p-2 rounded border border-slate-800 cursor-pointer">
+                    <input type="checkbox" id="hook-tech" class="rounded accent-teal-500">
+                    <span class="text-slate-300">Plateau Technique de Pointe</span>
+                  </label>
+                  <label class="flex items-center space-x-2 bg-slate-950 p-2 rounded border border-slate-800 cursor-pointer">
+                    <input type="checkbox" id="hook-relocation" class="rounded accent-teal-500">
+                    <span class="text-slate-300">Prise en charge Logement</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs text-slate-300 font-medium block mb-1">Ton du message</label>
+                  <select id="gen-tone" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:border-sky-500 focus:outline-none">
+                    <option value="Professionnel">Professionnel & Confraternel</option>
+                    <option value="Urgent">Remplacement Urgent</option>
+                    <option value="Prestige">Cabinet Executive</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-xs text-slate-300 font-medium block mb-1">Langue</label>
+                  <select id="gen-lang" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:border-sky-500 focus:outline-none">
+                    <option value="FR">Français</option>
+                    <option value="EN">Anglais</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <button onclick="generateInMailMessage()" class="w-full bg-gradient-to-r from-sky-500 to-teal-500 hover:from-sky-600 hover:to-teal-600 text-white font-medium py-2.5 rounded-xl text-sm shadow-lg shadow-sky-500/20 transition flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-sparkles"></i>
+              <span>Générer le message InMail</span>
+            </button>
+          </div>
+
+          <!-- Aperçu Message (7 cols) -->
+          <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
+            <div>
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Message InMail Généré</span>
+                <span id="gen-word-count" class="text-xs text-slate-400">0 mots</span>
+              </div>
+
+              <div class="space-y-3">
+                <div>
+                  <label class="text-xs text-slate-400 block mb-1">Objet du message</label>
+                  <input id="inmail-subject" type="text" readonly class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm font-semibold text-sky-400 focus:outline-none">
+                </div>
+
+                <div>
+                  <label class="text-xs text-slate-400 block mb-1">Corps du message</label>
+                  <textarea id="inmail-body" readonly class="w-full h-64 bg-slate-950 border border-slate-800 rounded-lg p-4 text-xs font-sans text-slate-200 leading-relaxed focus:outline-none resize-none"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+              <div class="flex items-center space-x-2 text-xs text-slate-400">
+                <i class="fa-solid fa-shield-halved text-teal-400"></i>
+                <span>Format optimisé LinkedIn InMail</span>
+              </div>
+              <div class="flex space-x-2">
+                <button onclick="copyInMailToClipboard()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-sky-300 border border-sky-500/30 rounded-lg text-xs font-medium transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-copy"></i> Copier le message
+                </button>
+                <button onclick="markAsContactedInPipeline()" class="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-medium transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-check"></i> Marquer "Contacté"
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ONGLET 3: PIPELINE KANBAN ==================== -->
+    <section id="view-pipeline" class="tab-content h-full p-6 overflow-y-auto hidden">
+      <div class="max-w-7xl mx-auto space-y-6">
+        <!-- Barre d'outils supérieure -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-users-viewfinder text-teal-400"></i> Pipeline de Recrutement Médical
+            </h2>
+            <p class="text-sm text-slate-400">Suivi en temps réel des profils soignants sourcés sur LinkedIn pour C&T Consultants.</p>
+          </div>
+
+          <!-- Filtres & Export CSV -->
+          <div class="flex flex-wrap items-center gap-3">
+            <select id="filter-specialty" onchange="filterPipeline()" class="bg-slate-900 border border-slate-800 text-slate-300 text-xs rounded-xl px-3 py-2 focus:outline-none">
+              <option value="ALL">Toutes les spécialités</option>
+              <option value="Anesthesia">Anesthésie / IADE</option>
+              <option value="Intensive Care">Réanimation / Soins Intensifs</option>
+              <option value="Emergency">Urgences / SAMU</option>
+              <option value="Surgery">Bloc Opératoire / IBODE</option>
+            </select>
+
+            <div class="relative">
+              <input type="text" id="search-candidate" onkeyup="filterPipeline()" placeholder="Rechercher..." class="bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl pl-8 pr-3 py-2 focus:outline-none w-48">
+              <i class="fa-solid fa-search absolute left-2.5 top-2.5 text-slate-500 text-xs"></i>
+            </div>
+
+            <!-- BOUTON EXPORT EXCEL CSV -->
+            <button onclick="exportCandidatesToCSV()" class="bg-slate-800 hover:bg-slate-700 text-sky-300 border border-sky-500/30 px-3.5 py-2 rounded-xl text-xs font-medium shadow-md transition flex items-center gap-1.5">
+              <i class="fa-solid fa-file-excel text-emerald-400"></i> Export Excel (CSV)
+            </button>
+
+            <button onclick="openAddCandidateModal()" class="bg-teal-600 hover:bg-teal-500 text-white px-3.5 py-2 rounded-xl text-xs font-medium shadow-md transition flex items-center gap-1.5">
+              <i class="fa-solid fa-user-plus"></i> Nouveau Candidat
+            </button>
+          </div>
+        </div>
+
+        <!-- Colonnes Kanban -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
+          
+          <!-- Colonne 1: Sourcing LinkedIn -->
+          <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 min-h-[600px] flex flex-col">
+            <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+              <span class="font-semibold text-xs text-sky-400 uppercase tracking-wider flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-sky-400"></span> Identifiés sur LinkedIn
+              </span>
+              <span id="count-sourced" class="bg-slate-800 text-slate-300 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+            </div>
+            <div id="col-sourced" class="space-y-3 flex-1 overflow-y-auto pr-1"></div>
+          </div>
+
+          <!-- Colonne 2: InMail Envoyé -->
+          <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 min-h-[600px] flex flex-col">
+            <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+              <span class="font-semibold text-xs text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-amber-400"></span> InMail Envoyé
+              </span>
+              <span id="count-contacted" class="bg-slate-800 text-slate-300 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+            </div>
+            <div id="col-contacted" class="space-y-3 flex-1 overflow-y-auto pr-1"></div>
+          </div>
+
+          <!-- Colonne 3: Validation Ordre & Diplôme -->
+          <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 min-h-[600px] flex flex-col">
+            <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+              <span class="font-semibold text-xs text-purple-400 uppercase tracking-wider flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-purple-400"></span> Dossier en Validation
+              </span>
+              <span id="count-screening" class="bg-slate-800 text-slate-300 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+            </div>
+            <div id="col-screening" class="space-y-3 flex-1 overflow-y-auto pr-1"></div>
+          </div>
+
+          <!-- Colonne 4: Placé en Établissement -->
+          <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 min-h-[600px] flex flex-col">
+            <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+              <span class="font-semibold text-xs text-teal-400 uppercase tracking-wider flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-teal-400"></span> Placé / Prêt
+              </span>
+              <span id="count-placed" class="bg-slate-800 text-slate-300 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+            </div>
+            <div id="col-placed" class="space-y-3 flex-1 overflow-y-auto pr-1"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ONGLET 4: KPIS & PERFORMANCE ==================== -->
+    <section id="view-analytics" class="tab-content h-full p-6 overflow-y-auto hidden">
+      <div class="max-w-7xl mx-auto space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-chart-line text-sky-400"></i> Performance du Sourcing & Indicateurs C&T Consultants
+          </h2>
+          <p class="text-sm text-slate-400">Indicateurs clés du taux de réponse, des délais de pourvoi et de la qualification des dossiers soignants.</p>
+        </div>
+
+        <!-- Cartes Indicateurs -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
+            <div class="flex items-center justify-between text-slate-400 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Taux de réponse InMail</span>
+              <i class="fa-solid fa-reply text-sky-400"></i>
+            </div>
+            <div class="flex items-baseline space-x-2">
+              <span class="text-2xl font-bold text-white">44.8%</span>
+              <span class="text-xs text-teal-400 font-medium"><i class="fa-solid fa-arrow-up"></i> +14% vs secteur</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-2">Moyenne secteur santé : 18%</p>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
+            <div class="flex items-center justify-between text-slate-400 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Délai moyen de pourvoi</span>
+              <i class="fa-solid fa-clock text-teal-400"></i>
+            </div>
+            <div class="flex items-baseline space-x-2">
+              <span class="text-2xl font-bold text-white">11.4 Jours</span>
+              <span class="text-xs text-teal-400 font-medium"><i class="fa-solid fa-arrow-down"></i> -5 jours</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-2">Postes en Bloc & Réanimation</p>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
+            <div class="flex items-center justify-between text-slate-400 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Diplômes & Ordre Validés</span>
+              <i class="fa-solid fa-id-card text-purple-400"></i>
+            </div>
+            <div class="flex items-baseline space-x-2">
+              <span class="text-2xl font-bold text-white">98.2%</span>
+              <span class="text-xs text-slate-400">Conformité</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-2">Vérification automatique</p>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
+            <div class="flex items-center justify-between text-slate-400 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Placements Réalisés</span>
+              <i class="fa-solid fa-user-check text-emerald-400"></i>
+            </div>
+            <div class="flex items-baseline space-x-2">
+              <span class="text-2xl font-bold text-white">38 Soignants</span>
+              <span class="text-xs text-teal-400 font-medium">Ce mois</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-2">Pour 14 cliniques & hôpitaux</p>
+          </div>
+        </div>
+
+        <!-- Graphiques -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+            <h3 class="text-sm font-semibold text-slate-200 mb-4 flex items-center justify-between">
+              <span>Volume par spécialité médicale</span>
+              <span class="text-xs font-normal text-slate-400">Répartition mensuelle</span>
+            </h3>
+            <div class="h-64">
+              <canvas id="chartSpecialties"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+            <h3 class="text-sm font-semibold text-slate-200 mb-4 flex items-center justify-between">
+              <span>Tunnel de conversion LinkedIn</span>
+              <span class="text-xs font-normal text-slate-400">Du sourcing au placement</span>
+            </h3>
+            <div class="h-64">
+              <canvas id="chartFunnel"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal : Ajouter un candidat manuellement -->
+  <div id="modal-add-candidate" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-base text-white">Ajouter un candidat LinkedIn</h3>
+        <button onclick="closeAddCandidateModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs text-slate-300 block mb-1">Nom Complet & Titre</label>
+          <input id="input-name" type="text" placeholder="ex: Dr. Sophie Bernard" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-sky-500">
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-300 block mb-1">Spécialité Médicale</label>
+          <select id="input-specialty" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none">
+            <option value="Anesthesia">Anesthésie / IADE</option>
+            <option value="Intensive Care">Réanimation / ICU</option>
+            <option value="Emergency">Urgences / SAMU</option>
+            <option value="Surgery">Bloc Opératoire / IBODE</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-300 block mb-1">Lien du profil LinkedIn</label>
+          <input id="input-url" type="text" placeholder="https://linkedin.com/in/..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white focus:outline-none">
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-300 block mb-1">Statut initial</label>
+          <select id="input-status" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none">
+            <option value="sourced">Identifié</option>
+            <option value="contacted">InMail Envoyé</option>
+            <option value="screening">Dossier en Validation</option>
+            <option value="placed">Placé / Prêt</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-2 pt-2">
+        <button onclick="closeAddCandidateModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs font-medium hover:bg-slate-700">Annuler</button>
+        <button onclick="submitNewCandidate()" class="px-4 py-2 bg-teal-600 text-white rounded-lg text-xs font-medium hover:bg-teal-500">Enregistrer le candidat</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Données par défaut pour C&T Consultants
+    let defaultCandidates = [
+      { id: 1, name: "Dr. Julien Mercier", specialty: "Anesthesia", title: "Infirmier Anesthésiste Diplômé (IADE)", hospital: "Ex-CHU Lyon", status: "sourced", match: 94, url: "linkedin.com/in/j-mercier-med" },
+      { id: 2, name: "Dr. Claire Dupont", specialty: "Intensive Care", title: "Médecin Réanimateur Senior", hospital: "Clinique du Parc", status: "sourced", match: 91, url: "linkedin.com/in/c-dupont-icu" },
+      { id: 3, name: "Antoine Rousseau", specialty: "Surgery", title: "Infirmier de Bloc Opératoire (IBODE)", hospital: "Hôpital Privé Sud", status: "sourced", match: 86, url: "linkedin.com/in/a-rousseau-ibode" },
+      { id: 4, name: "Dr. Sophie Bernard", specialty: "Emergency", title: "Médecin Urgentiste", hospital: "SAMU 75", status: "contacted", match: 96, url: "linkedin.com/in/s-bernard-urg" },
+      { id: 5, name: "Lucas Moreau", specialty: "Anesthesia", title: "IADE Anesthésie Pédiatrique", hospital: "CHU Bordeaux", status: "contacted", match: 88, url: "linkedin.com/in/l-moreau-iade" },
+      { id: 6, name: "Dr. Camille Martin", specialty: "Intensive Care", title: "Praticien Hospitalier Réanimation", hospital: "AP-HP Paris", status: "screening", match: 95, url: "linkedin.com/in/c-martin-aphp" },
+      { id: 7, name: "Dr. Thomas Laurent", specialty: "Surgery", title: "Chirurgien Viscéral", hospital: "Polyclinique Nord", status: "screening", match: 90, url: "linkedin.com/in/t-laurent-visceral" },
+      { id: 8, name: "Dr. Élodie Roche", specialty: "Emergency", title: "Urgentiste Cadre", hospital: "Clinique Saint-Jean", status: "placed", match: 98, url: "linkedin.com/in/e-roche-med" },
+      { id: 9, name: "Nicolas Benoit", specialty: "Anesthesia", title: "Infirmier Anesthésiste", hospital: "CHU Lille", status: "placed", match: 92, url: "linkedin.com/in/n-benoit-iade" }
+    ];
+
+    // Chargement depuis le stockage local (localStorage)
+    let candidateStore = JSON.parse(localStorage.getItem('ct_consultants_candidates')) || defaultCandidates;
+
+    function saveCandidatesToLocalStorage() {
+      localStorage.setItem('ct_consultants_candidates', JSON.stringify(candidateStore));
+    }
+
+    let parsedCurrentCandidate = null;
+
+    const sampleLinkedInText = `
+Dr. Julien Mercier
+Infirmier Anesthésiste Diplômé d'État (IADE) | Spécialiste Anesthésie Cardiaque & Réanimation
+Lyon, Auvergne-Rhône-Alpes, France
+
+À propos :
+Infirmier Anesthésiste Diplômé d'État (IADE) passionné avec plus de 8 ans d'expérience clinique en CHU de Niveau 3 et cliniques privées chirurgicales. Spécialisé en anesthésie cardiaque, monitoring hémodynamique et gestion des urgences vitales. Membre actif de l'Ordre National des Infirmiers (ONI).
+
+Expérience :
+Senior IADE - Anesthésie Cardiaque & Chirurgie Lourde
+Clinique Saint-Augustin · Temps plein
+2020 - Présent (4 ans)
+- Prise en charge des protocoles d'anesthésie en chirurgie cardiaque et neurochirurgie.
+- Pose d'accès vasculaires sous échographie et réanimation cardio-pulmonaire avancée.
+
+IADE - Service de Réanimation polyvalente & Urgences
+CHU de Lyon - Hôpitaux du Sud
+2016 - 2020 (4 ans)
+- Surveillance et soins critiques des patients en post-opératoire lourd.
+- Gestion des respirateurs et assistance ECMO.
+
+Diplômes et Formations :
+- Diplôme d'État d'Infirmier Anesthésiste (IADE) - Université Claude Bernard Lyon 1
+- Inscription à l'Ordre National des Infirmiers (ONI n°2948102)
+- Certification AFGSU Niveau 2 (Attestation de Formation aux Gestes et Soins d'Urgence)
+    `;
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-tab').forEach(el => {
+        el.classList.remove('bg-sky-600', 'text-white', 'shadow-md');
+        el.classList.add('text-slate-400', 'hover:text-slate-200');
+      });
+
+      document.getElementById(`view-${tabId}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-${tabId}`);
+      activeBtn.classList.add('bg-sky-600', 'text-white', 'shadow-md');
+      activeBtn.classList.remove('text-slate-400');
+
+      if (tabId === 'pipeline') renderPipeline();
+      if (tabId === 'analytics') initAnalyticsCharts();
+    }
+
+    function loadSampleProfile() {
+      document.getElementById('raw-linkedin-input').value = sampleLinkedInText.trim();
+      showToast('Profil IADE de démonstration chargé.');
+    }
+
+    function clearParserInput() {
+      document.getElementById('raw-linkedin-input').value = '';
+      document.getElementById('parse-results').classList.add('hidden');
+      document.getElementById('parse-placeholder').classList.remove('hidden');
+    }
+
+    function parseLinkedInProfile() {
+      const text = document.getElementById('raw-linkedin-input').value;
+      if (!text.trim()) {
+        showToast('Veuillez d\'abord coller un texte de profil LinkedIn.', 'error');
+        return;
+      }
+
+      const isIADE = text.toLowerCase().includes('iade') || text.toLowerCase().includes('anesthésiste');
+      const isDoctor = text.toLowerCase().includes('médecin') || text.toLowerCase().includes('dr.');
+      
+      parsedCurrentCandidate = {
+        name: text.split('\n')[0].replace('Dr. ', '').trim() || "Candidat Extrait",
+        headline: text.split('\n')[1] || "Professionnel de Santé",
+        specialty: isIADE ? "Anesthésie & Réanimation" : (isDoctor ? "Médecine d'Urgence" : "Soins Généralistes"),
+        seniority: text.includes('Senior') || text.includes('8 ans') ? "Senior (+8 ans d'exp.)" : "Expérimenté",
+        match: 94,
+        certs: [
+          "Diplôme d'État IADE",
+          "Ordre des Infirmiers Verified (ONI)",
+          "AFGSU Niveau 2",
+          "Certification Urgences"
+        ],
+        skills: [
+          "Anesthésie Cardiaque", "Guidage Échographique", "Support ECMO", "Monitoring Hémodynamique", "Réanimation"
+        ],
+        history: [
+          "Clinique Saint-Augustin (2020 - Présent) · Senior IADE",
+          "CHU de Lyon (2016 - 2020) · Spécialiste Anesthésie & Réanimation"
+        ]
+      };
+
+      document.getElementById('parsed-name').textContent = parsedCurrentCandidate.name;
+      document.getElementById('parsed-headline').textContent = parsedCurrentCandidate.headline;
+      document.getElementById('parsed-specialty').textContent = parsedCurrentCandidate.specialty;
+      document.getElementById('parsed-seniority').textContent = parsedCurrentCandidate.seniority;
+      
+      const certsContainer = document.getElementById('parsed-certs');
+      certsContainer.innerHTML = parsedCurrentCandidate.certs.map(c => 
+        `<span class="px-2.5 py-1 bg-slate-800 border border-slate-700 text-teal-300 rounded-md text-[11px] font-medium"><i class="fa-solid fa-certificate text-teal-400 mr-1"></i>${c}</span>`
+      ).join('');
+
+      const skillsContainer = document.getElementById('parsed-skills');
+      skillsContainer.innerHTML = parsedCurrentCandidate.skills.map(s => 
+        `<span class="px-2 py-0.5 bg-sky-950 border border-sky-800/60 text-sky-300 rounded text-[11px]">${s}</span>`
+      ).join('');
+
+      const historyContainer = document.getElementById('parsed-history');
+      historyContainer.innerHTML = parsedCurrentCandidate.history.map(h => 
+        `<li class="flex items-center space-x-2"><i class="fa-solid fa-hospital text-slate-500"></i><span>${h}</span></li>`
+      ).join('');
+
+      document.getElementById('parse-placeholder').classList.add('hidden');
+      document.getElementById('parse-results').classList.remove('hidden');
+      showToast('Profil LinkedIn extrait et qualifié.');
+    }
+
+    function sendToInmailGen() {
+      if (!parsedCurrentCandidate) return;
+      document.getElementById('gen-candidate-name').value = parsedCurrentCandidate.name;
+      switchTab('generator');
+      generateInMailMessage();
+    }
+
+    function saveCandidateToPipeline() {
+      if (!parsedCurrentCandidate) return;
+      const newCand = {
+        id: Date.now(),
+        name: parsedCurrentCandidate.name,
+        specialty: "Anesthesia",
+        title: parsedCurrentCandidate.headline.split('|')[0] || "Spécialiste",
+        hospital: "Sourcing LinkedIn C&T Consultants",
+        status: "sourced",
+        match: 94,
+        url: "linkedin.com/in/profil-extrait"
+      };
+      candidateStore.unshift(newCand);
+      saveCandidatesToLocalStorage();
+      showToast(`${newCand.name} ajouté au pipeline !`);
+      switchTab('pipeline');
+    }
+
+    function generateInMailMessage() {
+      const name = document.getElementById('gen-candidate-name').value || "Dr. Candidat";
+      const role = document.getElementById('gen-role').value;
+      const facility = document.getElementById('gen-facility').value;
+      const lang = document.getElementById('gen-lang').value;
+
+      const hookSalary = document.getElementById('hook-salary').checked;
+      const hookSchedule = document.getElementById('hook-schedule').checked;
+      const hookTech = document.getElementById('hook-tech').checked;
+
+      let subject = "";
+      let body = "";
+
+      if (lang === 'FR') {
+        subject = `Opportunité Spécialisée : Poste de ${role} - ${facility}`;
+        body = `Bonjour ${name},\n\nJ'ai consulté votre parcours sur LinkedIn avec beaucoup d'intérêt, notamment vos compétences au sein des services d'anesthésie-réanimation.\n\nPour le compte de l'un de nos partenaires hospitaliers (${facility}), notre cabinet C&T Consultants recherche actuellement un(e) ${role}.\n\nPoints forts du poste :\n`;
+        if (hookSalary) body += `• Rémunération très attractive (+20% à +25% selon profil).\n`;
+        if (hookSchedule) body += `• Plannings flexibles (vacations en 12h, rythme préservé).\n`;
+        if (hookTech) body += `• Plateau technique moderne et environnement d'excellence.\n`;
+        body += `\nVotre profil correspond en tous points aux exigences du chef de service. Seriez-vous disponible pour un court échange téléphonique informel de 5 minutes cette semaine ?\n\nBien cordialement,\nL'Équipe Recrutement Médical | C&T Consultants`;
+      } else {
+        subject = `Exclusive Opportunity: ${role} Position at ${facility}`;
+        body = `Hello ${name},\n\nI reviewed your profile on LinkedIn with great interest, especially your background in intensive care and surgical units.\n\nOur agency C&T Consultants is currently sourcing a ${role} on behalf of ${facility}.\n\nKey Highlights:\n`;
+        if (hookSalary) body += `• Above-market compensation package (+20% to +25%).\n`;
+        if (hookSchedule) body += `• Flexible shift planning (12h shifts available).\n`;
+        if (hookTech) body += `• State-of-the-art medical and surgical infrastructure.\n`;
+        body += `\nWould you be open for a brief 5-minute exploratory call this week?\n\nBest regards,\nHealthcare Recruitment Team | C&T Consultants`;
+      }
+
+      document.getElementById('inmail-subject').value = subject;
+      document.getElementById('inmail-body').value = body;
+
+      const wordCount = body.trim().split(/\s+/).length;
+      document.getElementById('gen-word-count').textContent = `${wordCount} mots`;
+      showToast('Message InMail généré.');
+    }
+
+    function copyInMailToClipboard() {
+      const subject = document.getElementById('inmail-subject').value;
+      const body = document.getElementById('inmail-body').value;
+      const fullText = `Objet: ${subject}\n\n${body}`;
+
+      const tempInput = document.createElement('textarea');
+      tempInput.value = fullText;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+
+      showToast('Message copié dans le presse-papier !');
+    }
+
+    function markAsContactedInPipeline() {
+      const name = document.getElementById('gen-candidate-name').value;
+      const candidate = candidateStore.find(c => c.name.toLowerCase().includes(name.toLowerCase()));
+      if (candidate) {
+        candidate.status = 'contacted';
+        saveCandidatesToLocalStorage();
+        showToast(`Statut de ${candidate.name} mis à jour : "InMail Envoyé".`);
+      } else {
+        showToast('Statut mis à jour dans la base.');
+      }
+    }
+
+    function renderPipeline() {
+      const cols = {
+        sourced: document.getElementById('col-sourced'),
+        contacted: document.getElementById('col-contacted'),
+        screening: document.getElementById('col-screening'),
+        placed: document.getElementById('col-placed')
+      };
+
+      Object.values(cols).forEach(col => col.innerHTML = '');
+
+      const filterSpec = document.getElementById('filter-specialty').value;
+      const searchQuery = document.getElementById('search-candidate').value.toLowerCase();
+
+      let filtered = candidateStore.filter(c => {
+        const matchesSpec = filterSpec === 'ALL' || c.specialty === filterSpec;
+        const matchesSearch = c.name.toLowerCase().includes(searchQuery) || c.title.toLowerCase().includes(searchQuery);
+        return matchesSpec && matchesSearch;
+      });
+
+      const counts = { sourced: 0, contacted: 0, screening: 0, placed: 0 };
+
+      filtered.forEach(cand => {
+        counts[cand.status]++;
+        const cardHtml = `
+          <div class="bg-slate-950 border border-slate-800 hover:border-sky-500/50 rounded-xl p-3.5 space-y-2.5 transition shadow-sm group">
+            <div class="flex items-start justify-between">
+              <div>
+                <h4 class="font-semibold text-xs text-white group-hover:text-sky-400 transition">${cand.name}</h4>
+                <p class="text-[11px] text-slate-400">${cand.title}</p>
+              </div>
+              <span class="px-2 py-0.5 bg-teal-500/10 border border-teal-500/30 text-teal-400 rounded-md text-[10px] font-bold">
+                ${cand.match}% Adéquation
+              </span>
+            </div>
+
+            <div class="flex items-center space-x-2 text-[11px] text-slate-400">
+              <i class="fa-solid fa-hospital text-slate-500"></i>
+              <span>${cand.hospital}</span>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-slate-800/80 text-[11px]">
+              <a href="https://${cand.url}" target="_blank" class="text-sky-400 hover:underline flex items-center gap-1">
+                <i class="fa-brands fa-linkedin"></i> Profil
+              </a>
+              <select onchange="updateCandidateStatus(${cand.id}, this.value)" class="bg-slate-900 border border-slate-800 text-[10px] text-slate-300 rounded px-1.5 py-0.5 focus:outline-none">
+                <option value="sourced" ${cand.status==='sourced'?'selected':''}>Identifié</option>
+                <option value="contacted" ${cand.status==='contacted'?'selected':''}>Contacté</option>
+                <option value="screening" ${cand.status==='screening'?'selected':''}>Validation</option>
+                <option value="placed" ${cand.status==='placed'?'selected':''}>Placé</option>
+              </select>
+            </div>
+          </div>
+        `;
+
+        if (cols[cand.status]) {
+          cols[cand.status].insertAdjacentHTML('beforeend', cardHtml);
+        }
+      });
+
+      document.getElementById('count-sourced').textContent = counts.sourced;
+      document.getElementById('count-contacted').textContent = counts.contacted;
+      document.getElementById('count-screening').textContent = counts.screening;
+      document.getElementById('count-placed').textContent = counts.placed;
+    }
+
+    function updateCandidateStatus(id, newStatus) {
+      const cand = candidateStore.find(c => c.id === id);
+      if (cand) {
+        cand.status = newStatus;
+        saveCandidatesToLocalStorage();
+        renderPipeline();
+        showToast(`Statut de ${cand.name} mis à jour.`);
+      }
+    }
+
+    function filterPipeline() {
+      renderPipeline();
+    }
+
+    // Exportation CSV optimisée pour Excel avec accents français
+    function exportCandidatesToCSV() {
+      if (!candidateStore || candidateStore.length === 0) {
+        showToast('Aucun candidat à exporter.', 'error');
+        return;
+      }
+
+      const headers = ["ID", "Nom du Candidat", "Titre / Poste", "Spécialité", "Établissement / Origine", "Score Adéquation (%)", "Statut Pipeline", "Lien LinkedIn"];
+      
+      const rows = candidateStore.map(c => [
+        c.id,
+        `"${(c.name || '').replace(/"/g, '""')}"`,
+        `"${(c.title || '').replace(/"/g, '""')}"`,
+        `"${(c.specialty || '').replace(/"/g, '""')}"`,
+        `"${(c.hospital || '').replace(/"/g, '""')}"`,
+        c.match || 0,
+        `"${c.status || 'sourced'}"`,
+        `"${c.url || ''}"`
+      ]);
+
+      const csvContent = [headers.join(";"), ...rows.map(r => r.join(";"))].join("\r\n");
+
+      // Clé UTF-8 BOM pour assurer le bon affichage des accents sous Excel
+      const BOM = "\uFEFF";
+      const blob = new Blob([BOM + csvContent], { type: "text/csv;charset=utf-8;" });
+      
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      const filename = `CT_Consultants_Candidats_LinkedIn_${new Date().toISOString().slice(0, 10)}.csv`;
+      
+      link.setAttribute("href", url);
+      link.setAttribute("download", filename);
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast(`Exportation de ${candidateStore.length} candidats vers Excel effectuée !`);
+    }
+
+    function openAddCandidateModal() {
+      document.getElementById('modal-add-candidate').classList.remove('hidden');
+    }
+
+    function closeAddCandidateModal() {
+      document.getElementById('modal-add-candidate').classList.add('hidden');
+    }
+
+    function submitNewCandidate() {
+      const name = document.getElementById('input-name').value;
+      const specialty = document.getElementById('input-specialty').value;
+      const url = document.getElementById('input-url').value || "linkedin.com/in/profil-custom";
+      const status = document.getElementById('input-status').value;
+
+      if (!name) {
+        showToast('Veuillez saisir le nom du candidat.', 'error');
+        return;
+      }
+
+      const newCand = {
+        id: Date.now(),
+        name: name,
+        specialty: specialty,
+        title: `Spécialiste ${specialty}`,
+        hospital: "Sourcing Direct LinkedIn",
+        status: status,
+        match: 92,
+        url: url
+      };
+
+      candidateStore.unshift(newCand);
+      saveCandidatesToLocalStorage();
+      closeAddCandidateModal();
+      renderPipeline();
+      showToast(`${name} ajouté au pipeline.`);
+    }
+
+    let chart1Instance = null;
+    let chart2Instance = null;
+
+    function initAnalyticsCharts() {
+      if (chart1Instance) chart1Instance.destroy();
+      if (chart2Instance) chart2Instance.destroy();
+
+      const ctx1 = document.getElementById('chartSpecialties').getContext('2d');
+      chart1Instance = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Anesthésie (IADE)', 'Réanimation (ICU)', 'Urgences', 'Bloc Opératoire (IBODE)', 'Cardiologie'],
+          datasets: [{
+            label: 'Profils Identifiés',
+            data: [65, 48, 35, 42, 22],
+            backgroundColor: '#0284c7',
+            borderRadius: 6
+          }, {
+            label: 'Placements Réalisés',
+            data: [28, 19, 14, 18, 9],
+            backgroundColor: '#0d9488',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#94a3b8', font: { size: 11 } } }
+          },
+          scales: {
+            x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } },
+            y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#1e293b' } }
+          }
+        }
+      });
+
+      const ctx2 = document.getElementById('chartFunnel').getContext('2d');
+      chart2Instance = new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: ['Identifiés LinkedIn', 'InMail Envoyé', 'Dossier Validé', 'Entretien Établissement', 'Placé'],
+          datasets: [{
+            label: 'Tunnel de Conversion',
+            data: [210, 145, 98, 54, 38],
+            borderColor: '#38bdf8',
+            backgroundColor: 'rgba(56, 189, 248, 0.1)',
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: '#0d9488',
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#94a3b8', font: { size: 11 } } }
+          },
+          scales: {
+            x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } },
+            y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#1e293b' } }
+          }
+        }
+      });
+    }
+
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      const toastIcon = document.getElementById('toast-icon');
+
+      toastMsg.textContent = msg;
+
+      if (type === 'error') {
+        toast.classList.remove('bg-teal-600');
+        toast.classList.add('bg-rose-600');
+        toastIcon.className = 'fa-solid fa-triangle-exclamation text-xl';
+      } else {
+        toast.classList.remove('bg-rose-600');
+        toast.classList.add('bg-teal-600');
+        toastIcon.className = 'fa-solid fa-circle-check text-xl';
+      }
+
+      toast.classList.remove('translate-x-full', 'opacity-0');
+      
+      setTimeout(() => {
+        toast.classList.add('translate-x-full', 'opacity-0');
+      }, 3000);
+    }
+
+    window.onload = function() {
+      renderPipeline();
+    };
+  </script>
+</body>
+</html>
